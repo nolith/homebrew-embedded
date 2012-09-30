@@ -1,0 +1,27 @@
+diff --git a/trunk/Makefile b/trunk/Makefile
+--- a/trunk/Makefile
++++ b/trunk/Makefile
+@@ -83,22 +83,8 @@
+ endif
+ endif
+ 
+-REVISION = $(shell if [ -d .svn ]; then \
+-				if which svn > /dev/null; then \
+-					svn info | grep "Rev:" | sed -e '1p' -n | awk '{print "r"$$4}'; \
+-				fi \
+-			 else \
+-				if [ -d .git ]; then \
+-					git_rev=`git log --grep="git-svn-id" -n1 --format=short | grep commit | awk '{print $$2}'`; \
+-					git svn find-rev $$git_rev | awk '{print "r"$$1"g"}'; \
+-				fi; \
+-			 fi)
++CFLAGS += -DREVISION_VERSION=\"r252\"
+ 
+-ifeq ($(REVISION),)
+-CFLAGS += -DREVISION_VERSION=\"unknown\"
+-else
+-CFLAGS += -DREVISION_VERSION=\"$(REVISION)\"
+-endif
+ 
+ all: ap51-flash
+ 
