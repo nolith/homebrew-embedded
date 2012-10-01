@@ -6,34 +6,22 @@ class Olsrd < Formula
   version '0.6.3'
   sha1 'd949a46904e2c2ff694e8350cc5bbffb26d5011b'
 
+  #this patch is required only for Mountain Lion
+  def patches
+    # The build fails because OS X defaults to RFC2292 and 
+    #  requires __APPLE_USE_RFC_3542 to be set to use the newer defines.
+    # http://olsr.org/bugs/print_bug_page.php?bug_id=35
+    DATA if MacOS.version == :mountain_lion
+  end
+
   def install
-    custom_vars = "DESTDIR=#{prefix} USRDIR=#{prefix}"
-    system "make #{custom_vars} build_all" 
-    system "make #{custom_vars} install_olsrd"
+    args = %W[DESTDIR=#{prefix} USRDIR=#{prefix}]
+    system "make", "build_all", *args
+    system "make", "install_olsrd", *args
     lib.install Dir['lib/*/*.so.*'] 
   end
 
-  #this patch is required only for Mountain Lion
-  if `sw_vers -productVersion` =~ /^10\.8\./
-    def patches
-      # The build fails because OS X defaults to RFC2292 and 
-      #  requires __APPLE_USE_RFC_3542 to be set to use the newer defines.
-      # http://olsr.org/bugs/print_bug_page.php?bug_id=35
-      DATA
-    end
-  end
-
   def caveats; <<-EOS.undent
-    ========= C O N F I G U R A T I O N - F I L E ============
-    olsrd uses the configfile /etc/olsrd.conf
-    a default configfile. A sample RFC-compliance aimed
-    configfile can be found in olsrd.conf.default.rfc.
-    However none of the larger OLSRD using networks use that
-    so install a configfile with activated link quality exstensions
-    per default.
-    can be found at files/olsrd.conf.default.lq
-    ==========================================================
-
     -------------------------------------------
     Copy and edit #{prefix}/etc/olsrd.conf to /etc/olsrd.conf before running olsrd!!
     -------------------------------------------
