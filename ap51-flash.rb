@@ -7,7 +7,7 @@ class Ap51Flash < Formula
 
   def patches
     # Fix makefile in order to define the correct version number
-    'http://cl.ly/code/0C1k3y1C0d0z/000-ap51flash-r252.diff'
+    'https://github.com/nolith/homebrew-embedded/raw/master/patches/000-ap51flash-r252.diff'
   end
 
   def install
